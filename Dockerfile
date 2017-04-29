@@ -1,5 +1,4 @@
-FROM archimg/base-devel:latest
-COPY syncDaemon.sh /usr/bin/
+FROM base/devel:latest
 RUN pacman -Sy \
     && pacman -S android-tools \
                  android-udev \
@@ -19,7 +18,6 @@ RUN pacman -Sy \
 RUN echo 'cd /home/ftc/ftc_code' >> /home/ftc/.bashrc \
     && mkdir -p /home/ftc/ftc_code \
     && cd /home/ftc/ftc_code \
-    && git init \
     && mkdir teamcode \
     && curl -L https://github.com/ftctechnh/ftc_app/archive/master.zip > ./ftc_app.zip \
     && unzip ./ftc_app.zip \
@@ -38,6 +36,9 @@ RUN mkdir /root/.android/ \
     && (while sleep 3; do echo "y"; done) | /home/ftc/ftc_code/tools/bin/sdkmanager "platforms;android-23" \
     && (while sleep 3; do echo "y"; done) | /home/ftc/ftc_code/tools/bin/sdkmanager "platforms;android-19" \
     && /home/ftc/ftc_code/tools/bin/sdkmanager --update
+RUN mkdir -p /home/ftc/.gradle \
+    && echo "org.gradle.daemon=true" > /home/ftc/.gradle/gradle.properties \
+    && echo "org.gradle.jvmargs=-Xmx2048M" > /home/ftc/.gradle/gradle.properties
 RUN chown -R ftc:ftc /home/ftc/
 COPY compileUpload.sh /home/ftc/ftc_code/
 COPY connectADB.sh /home/ftc/ftc_code/
