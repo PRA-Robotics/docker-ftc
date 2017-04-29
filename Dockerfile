@@ -7,7 +7,8 @@ RUN pacman -Sy \
                  jdk8-openjdk \
                  unzip \
                  vim \
-                 base-devel --noconfirm \
+                 openssh \
+                 rsync --noconfirm \
     && sed -i '/#\[multilib\]/{s/^#//;n;s/^#//}' /etc/pacman.conf \
     && pacman -Sy \
     && pacman -S lib32-gcc-libs \
@@ -39,7 +40,8 @@ RUN mkdir /root/.android/ \
 RUN mkdir -p /home/ftc/.gradle \
     && echo "org.gradle.daemon=true" > /home/ftc/.gradle/gradle.properties \
     && echo "org.gradle.jvmargs=-Xmx2048M" > /home/ftc/.gradle/gradle.properties
-RUN chown -R ftc:ftc /home/ftc/
+RUN chown -R ftc:ftc /home/ftc/ \
+    && yes | pacman -Scc
 COPY compileUpload.sh /home/ftc/ftc_code/
 COPY connectADB.sh /home/ftc/ftc_code/
 CMD /bin/bash
